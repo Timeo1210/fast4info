@@ -1,0 +1,120 @@
+const fs = require('fs')
+const getMP3Duration = require('get-mp3-duration')
+const User = require("../models/user")
+
+module.exports = class Components {
+
+    constructor() {
+        //BOT
+        this.BotInUse = false
+
+        //Sounds
+        this.Sounds = {
+            Drum_Rolls: {
+                path: "sounds/Drum_Rolls.mp3",
+                duration: ""
+            }
+        }
+        this.soundsInit()
+    }
+
+    sendDM(message, text) {
+        message.member.createDM()
+        .then(DMChannel => {
+            DMChannel.send(text)
+        })
+        message.delete()
+    }
+
+    sendError(message) {
+        this.sendDM(message, "Une erreur est surevenu lors de l'execution de cette commande !")
+    }
+
+    soundsInit() {
+        //Initing the sounds class
+        for (var key in this.Sounds) {
+            let buffer = fs.readFileSync(this.Sounds[key].path)
+            this.Sounds[key].duration = getMP3Duration(buffer) + 200
+        }
+    }
+
+
+    //Random
+    getRandom(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min +1)) + min;
+    }
+
+    msToMinAndSec(millis) {
+        var minutes = Math.floor(millis / 60000);
+        var seconds = ((millis % 60000) / 1000).toFixed(0);
+        return minutes + " minutes et " + (seconds < 10 ? '0' : '') + seconds + " secondes";
+    }
+
+    commandDatabaseCheck(data, callback) {
+        /*
+        data.author_id
+        data.cooldown
+        data.message
+        data.command
+        data.commandText
+        */
+        if (this.BotInUse === true) {
+            this.sendDM(data.message, "Le bot est déja en cours d'utilisation")
+            return
+        }
+
+        try {
+            User.find({
+                user_id: data.author_id //data.author_id
+            }).then ( user => {
+                user = user[0]
+                //check if already a account
+                if (typeof user === 'undefined') {
+                    //no account
+                    let userData = {
+                        user_id: data.author_id,
+                    }
+                    userData[data.command] = new Date()
+                    user = new User(userData)
+                    user.save()
+
+                    callback()
+                    return true
+                } else {
+                    //check if cooldown of command_kick exist
+                    if (typeof user[data.command] === 'undefined') {
+                        user[data.command] = new Date()
+                        user.save()
+
+                        callback()
+                        return true
+                    } else {
+                        //check cooldown
+                        var userCoolDown = (new Date()) - user[data.command]
+                        if (userCoolDown > data.cooldown) {
+                            //can execute
+                            user[data.command] = new Date()
+                            user.save()
+
+                            callback()
+                            return true
+                        } else {
+                            let remainingTime = this.msToMinAndSec(data.cooldown - userCoolDown)
+                            let text = `Impossible d'utiliser la commande ${data.commandText} pendant encore ${remainingTime}`
+                            this.sendDM(data.message, text)
+                            return false
+                        }
+                    }
+                }
+            })
+        } catch (e) {
+            this.sendError(data.message)
+            console.error(e)
+        }
+    }
+
+
+
+}

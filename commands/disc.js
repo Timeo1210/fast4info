@@ -3,10 +3,10 @@ const User = require("../models/user")
 const Components_Module = require("../modules/Components")
 const Components = new Components_Module()
 
-module.exports = class Kick extends Command {
+module.exports = class Disc extends Command {
 
     static match(message) {
-        return message.content === "4kick"
+        return message.content === "4disc"
     }
 
     static action(message) {
@@ -15,8 +15,8 @@ module.exports = class Kick extends Command {
             author_id: message.author.id,
             cooldown: CoolDown,
             message: message,
-            command: "command_kick",
-            commandText: "4kick",
+            command: "command_disc",
+            commandText: "4disc",
         }
         Components.commandDatabaseCheck(data, () => {
             if (message.member.voiceChannel !== undefined) {
@@ -29,7 +29,7 @@ module.exports = class Kick extends Command {
                     let dispatcher = connection.playFile(Components.Sounds.Drum_Rolls.path, {
                         bitrate: 32
                     });
-                    dispatcher.setBitrate(32)
+                    dispatcher.setBitrate(64)
                     dispatcher.on('speaking', (speaking) => {
                         if (speaking === true) {
                             setTimeout(() => {
@@ -85,62 +85,16 @@ module.exports = class Kick extends Command {
                     })
                 })
                 .catch((e) => {
-                    console.error
+                    console.error(e);
                     Components.BotInUse = false
                 });
             } else {
                 message.member.createDM()
                 .then(DMChannel => {
-                    DMChannel.send("Impossible de 4kick si vous n'êtes pas dans un channel vocal.")
+                    DMChannel.send(`**Impossible de ${data.commandText} si vous n'êtes pas dans un channel vocal.**`)
                 })
             }
         })
-
-        /*
-        try {
-            User.find({
-                user_id: message.author.id
-            }).then ( user => {
-                if (user.length > 1) {
-                    Components.sendError(message)
-                    return
-                }
-                user = user[0]
-                //check if already a account
-                if (typeof user === 'undefined') {
-                    //no account
-                    user = new User({
-                        user_id: message.author.id,
-                        command_kick: new Date()
-                    })
-                    user.save()
-                    execute()
-                } else {
-                    //check if cooldown of command_kick exist
-                    if (typeof user.command_kick === 'undefined') {
-                        user.command_kick = new Date()
-                        user.save()
-                        execute()
-                    } else {
-                        //check cooldown
-                        var userCoolDown = (new Date()) - user.command_kick
-                        if (userCoolDown > CoolDown) {
-                            //can execute
-                            user.command_kick = new Date()
-                            user.save()
-                            execute()
-                        } else {
-                            let text = "Impossible d'utiliser la commande 4kick pendant encore " + Components.msToMinAndSec(CoolDown - userCoolDown)
-                            Components.sendDM(message, text)
-                        }
-                    }
-                }
-            })
-        } catch (e) {
-            Components.sendError(message)
-            console.error(e)
-        }
-        */
     }
 
 }

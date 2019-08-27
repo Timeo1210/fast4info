@@ -8,14 +8,11 @@ const fs = require('fs')
 module.exports = class Info extends Command {
 
     static match(message) {
-        var tempMessage = message.content
-        tempMessage = tempMessage.split(" ")
-
-        return tempMessage[0] === "4info"
+        return message.content.startsWith("4info")
     }
 
     static action(message) {
-        const CoolDown = 15000 //5 second
+        const CoolDown = 15000
         var data = {
             author_id: message.author.id,
             cooldown: CoolDown,
@@ -84,16 +81,7 @@ module.exports = class Info extends Command {
         
             function searchPJ(request, message) {
                 var soup = new JSSoup(request)
-                var noResponse = soup.findAll("p")
-                
-                if (typeof noResponse !== 'undefined' && noResponse.length === 2) {
-                    if (noResponse[0].attrs.class.split(' ')[0] === "wording-no-responses") {
-                        message.channel.send("**Pas de résultat pour cette recherche !**")
-                        return
-                    }
-                }
-                
-                
+                var noResponse = soup.findAll("p")           
         
                 var nameList = []
                 var adresseList = []
@@ -102,6 +90,11 @@ module.exports = class Info extends Command {
                 var tempNameList = soup.findAll('a', 'denomination-links')
                 var tempAdresseList = soup.findAll('a', 'adresse')
                 var tempNumList = soup.findAll('strong', 'num')
+
+                if (tempNameList.length === 0) {
+                    message.channel.send("**Pas de résultat pour cette recherche !**")
+                    return
+                }
                 
                 
                 for (let i = 0; i < tempNameList.length; i++) {
@@ -114,6 +107,17 @@ module.exports = class Info extends Command {
         
                 for (let i = 0; i < tempNumList.length; i++) {
                     numList.push(tempNumList[i].contents[0]._text.trim().replace(/&nbsp;/g, ''))
+                }
+
+
+                if (nameList.length > 13) {
+                    nameList = nameList.slice(0, 13)
+                }
+                if (adresseList.length > 13) {
+                    adresseList = adresseList.slice(0, 13)
+                }
+                if (numList.length > 13) {
+                    numList = numList.slice(0, 13)
                 }
 
                 sendMessage()
@@ -129,7 +133,6 @@ module.exports = class Info extends Command {
                         textMessage = textMessage.concat(str)
                     }
                     textMessage = textMessage.concat(`\`\`\``)
-            
                     message.channel.send(textMessage)
                 }
             }

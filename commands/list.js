@@ -1,26 +1,26 @@
 const Command = require("./command.js")
-const User = require("../models/user")
 const Components_Module = require("../modules/Components")
 const Components = new Components_Module()
 
 module.exports = class Ping extends Command {
 
     static match(message) {
-        return message.content === "4ping"
+        return message.content === "4list"
     }
 
     static action(message) {
-        const CoolDown = 2000 //5 second
+        const CoolDown = 5000 //5 second
         var data = {
             author_id: message.author.id,
             cooldown: CoolDown,
             message: message,
-            command: "command_ping",
-            commandText: "4ping",
+            command: "command_list",
+            commandText: "4list",
         }
+        console.log('tfe')
 
         Components.commandDatabaseCheck(data, () => {
-            message.channel.send("pong")
+            console.log("test")
         })
 
     }

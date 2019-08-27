@@ -10,7 +10,11 @@ const usersSchema = new mongoose.Schema({
         type: Date,
         required: false
     },
-    command_kick: {
+    command_disc: {
+        type: Date,
+        required: false
+    },
+    command_help: {
         type: Date,
         required: false
     },

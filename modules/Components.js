@@ -7,6 +7,7 @@ module.exports = class Components {
     constructor() {
         //BOT
         this.BotInUse = false
+        this.BotId = "602887197749674030"
 
         //Sounds
         this.Sounds = {
@@ -18,12 +19,34 @@ module.exports = class Components {
         this.soundsInit()
     }
 
-    sendDM(message, text) {
+    
+
+    sendChannel(message, text) {
+        message.channel.send(text)
+        message.delete()
+    }
+
+    sendDM(message, text, member = null) {
+        function sendMessage(DMChannel) {
+            DMChannel.send(text)
+        }
+
+        if (member === null) {
+            message.member.createDM().then( DMChannel => {
+                sendMessage(DMChannel)
+            })
+            message.delete()
+        } else {
+            member.createDM().then( DMChannel => {
+                sendMessage(DMChannel)
+            })
+        }
+        /*
         message.member.createDM()
         .then(DMChannel => {
             DMChannel.send(text)
         })
-        message.delete()
+        */
     }
 
     sendError(message) {

@@ -3,3 +3,4 @@ node_modules
 build
 modules/searchPersonne.py
 binding.gyp
+package-lock.js

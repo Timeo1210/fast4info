@@ -51,9 +51,16 @@ module.exports = class Info extends Command {
         processMessage()
 
         
-        Components.commandDatabaseCheck(data, () => {
-            message.delete()
-            searchPersonne(message, options)
+        Components.canUseCommand(message.member, "info")
+        .then(handle => {
+            if (handle === true) {
+                Components.commandDatabaseCheck(data, () => {
+                    message.delete()
+                    searchPersonne(message, options)
+                })
+            } else {
+                Components.sendDM(message, "**Vous n'avez pas la permission d'utiliser cette commande**")
+            }
         })
 
         function searchPersonne(message, data) {

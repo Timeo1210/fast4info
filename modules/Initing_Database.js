@@ -8,6 +8,7 @@ function Init() {
             coolDown: 100,
             command: "command_help",
             commandText: "4help",
+            permission_flags: ["SEND_MESSAGES"]
         }
         help.textDescription = `Lorsque la commande ${help.commandText} est utilisée le bot vous explique comment utiliser la fonction specifier (voir les paramètres)  \n Pour la liste des commande : 4list`
 
@@ -23,6 +24,7 @@ function Init() {
             coolDown: 2000,
             command: "command_ping",
             commandText: "4ping",
+            permission_flags: ["SEND_MESSAGES"]
         }
         ping.textDescription =  `Lorsque la commande ${ping.commandText} est utilisée le bot renvoie 'ping' automatiquement.`
 
@@ -35,9 +37,10 @@ function Init() {
         //Disc help
         var disc = {
             name: "disc",
-            coolDown: 20 * 60 * 1000,
+            coolDown: 30000,
             command: "command_disc",
-            commandText: "4disc"
+            commandText: "4disc",
+            permission_flags: ["SEND_MESSAGES"]
         }
         disc.textDescription = `Lorsque la commande ${disc.commandText} est utilisée le bot va rentrée dans le channel vocal ou vous vous situez, jouer une musique est vous aurez 50% de chance de vous faire expluser du channel vocal, sinon il explusera quelqu'un d'autre au hasard`
 
@@ -52,12 +55,47 @@ function Init() {
             name: "info",
             coolDown: 15000,
             command: "command_info",
-            commandText: "4info"
+            commandText: "4info",
+            permission_flags: ["SEND_MESSAGES"]
         }
         info.textDescription = `Lorsque la commande ${info.commandText} est utilisée le bot vous envera l'adresse postal et le numero de téléphone de la personne spécifier (voir les parametres).`
 
         info.parameters = `La commande doit être utilisée sous cette forme: ${info.commandText} [Prenom] [Nom] ? [Ville] / [Numdero de départements] `
         
+        var schema = new Help(info)
+        schema.save()
+    }
+    function h_fKick() {
+        //fKick help
+        var info = {
+            name: "fKick",
+            coolDown: 0,
+            command: "command_fKick",
+            commandText: "4fKick",
+            permission_flags: ["SEND_MESSAGES", "KICK_MEMBERS"]
+        }
+        info.textDescription = `Lorsque la commande ${info.commandText} est utilisée le bot kickera du server la personne designer (voir paramètres) et lui envera un message d'invitation.`
+
+        info.parameters = `La commande doit être utilisée sous cette forme: ${info.commandText} [@User]`
+        
+        var schema = new Help(info)
+        schema.save()
+    }
+
+    function h_list() {
+        //list help
+        var info = {
+            name: "list",
+            coolDown: 5000,
+            command: "command_list",
+            commandText: "4list",
+            permission_flags: ["SEND_MESSAGES"]
+        }
+
+        info.textDescription = `Lorsque la commande ${info.commandText} est utilisée le bot vous donnera la liste de commande disponible pour vous ou de la personne specifier (voir paramètres)`
+
+        info.parameters = `La commande doit être utilisée sous cette forme: ${info.commandText} [@User]`
+
         var schema = new Help(info)
         schema.save()
     }
@@ -67,6 +105,8 @@ function Init() {
     h_ping();
     h_disc();
     h_info();
+    h_fKick();
+    h_list();
 }
 
 module.exports = Init

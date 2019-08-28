@@ -27,6 +27,10 @@ const helpSchema = new mongoose.Schema({
     parameters: {
         type: String,
         required: false
+    },
+    permission_flags: {
+        type: Array,
+        required: true
     }
 })
 
@@ -41,5 +45,6 @@ helpSchema.virtual('description').get(function() {
     ${this.parameters ? this.parameters : "Cette commande n'a pas de paramètres !"}\`\`\``
     return text;
 })
+
 
 module.exports = mongoose.model('Help', helpSchema)

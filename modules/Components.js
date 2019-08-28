@@ -1,3 +1,5 @@
+const mongoose = require("mongoose")
+
 const fs = require('fs')
 const getMP3Duration = require('get-mp3-duration')
 const User = require("../models/user")
@@ -17,6 +19,10 @@ module.exports = class Components {
             }
         }
         this.soundsInit()
+
+        this.TimeoutCheck = new Promise(function(resolve, reject) {
+
+        })
     }
 
     
@@ -136,6 +142,66 @@ module.exports = class Components {
             this.sendError(data.message)
             console.error(e)
         }
+    }
+
+    permissionsFlagsCheck(guildMember, commandsName) {
+
+        //https://discord.js.org/#/docs/main/stable/class/Permissions?scrollTo=s-FLAGS
+
+        //console.log(Help.find())
+        const Help = require('../models/help.js');
+
+
+        if (typeof commandsName === "string") {
+            commandsName = [commandsName]
+        }
+
+
+        return new Promise((resolve, reject) => {
+        
+            Help.find().then(commands => {
+                var searchCommands = []
+                for (let i = 0; i < commands.length; i++) {
+                    if (commandsName.some(elem => elem === commands[i].name)) {
+                        searchCommands.push(commands[i])
+                    }
+                }
+
+                var hasPermCommands = []
+
+                for (let i = 0; i < searchCommands.length; i++) {
+
+                    if (searchCommands[i].permission_flags.every(elem => guildMember.hasPermission(elem))) {
+                        hasPermCommands.push(searchCommands[i])
+                    }
+
+                }
+
+                resolve(hasPermCommands)
+                
+            })
+
+        })
+
+
+    }
+
+    canUseCommand(guildMember, commandsName) {
+        return new Promise((resolve, reject) => {
+            this.permissionsFlagsCheck(guildMember, commandsName)
+            .then(handle => {
+                try {
+                    if (commandsName === handle[0].name) {
+                        resolve(true)
+                    }
+                } catch (e) {
+                    resolve(false)
+                }
+            }).catch(e => {
+                console.log(e)
+                reject()
+            })
+        })
     }
 
 

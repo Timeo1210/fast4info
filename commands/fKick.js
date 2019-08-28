@@ -15,26 +15,31 @@ module.exports = class fKick extends Command {
 
         const user = message.mentions.users.first()
 
-        if (message.member.hasPermission('ADMINISTRATOR') === false) {
-            Components.sendDM(message, "**Vous n'avez pas la permission pour utiliser cette commande !**")
+        Components.canUseCommand(message.member, "fKick")
+        .then(handle => {
+            if (handle === true) {
+                if (!user) {
+                    Components.sendDM(message, "**Veuillez spécifier le membre a kick**")
+        
+                } else if (user.id === Components.BotId) {
+                    Components.sendDM(message, "**Impossible de me kick en utiliser une de mes commande**")
+        
+                } else if (user) {
+                    const member = message.guild.member(user)
+                    member.createDM().then( DMChannel => {
+                        DMChannel.send("https://discord.gg/BugQuWe")
+                        .then( () => {
+                            member.kick()
+                        })
+                    })
+                    message.delete()
+        
+                }
 
-        } else if (!user) {
-            Components.sendDM(message, "**Veuillez spécifier le membre a kick**")
-
-        } else if (user.id === Components.BotId) {
-            Components.sendDM(message, "**Impossible de me kick en utiliser une de mes commande**")
-
-        } else if (user) {
-            const member = message.guild.member(user)
-            member.createDM().then( DMChannel => {
-                DMChannel.send("https://discord.gg/BugQuWe")
-                .then( () => {
-                    member.kick()
-                })
-            })
-            message.delete()
-
-        }
+            } else {
+                Components.sendDM(message, "**Vous n'avez pas la permission d'utiliser cette commande**")
+            }
+        })
 
     }
 

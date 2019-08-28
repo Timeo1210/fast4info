@@ -24,9 +24,12 @@ mongoose.connect(process.env.DATABASE_URL, {
 })
 const db = mongoose.connection
 db.on('error', (error) => console.log(error))
-db.once('open', () => console.log('Connected to database'))
-Initing_Database()
-db.dropDatabase()
+db.once('open', () => {
+    console.log('Connected to database')
+    db.dropDatabase((err) => {
+        Initing_Database()
+    })
+})
 //delete the database
 
 
@@ -40,6 +43,8 @@ bot.on('ready', function() {
 
 bot.on('message', function (message) {
     // bot id = 602887197749674030
+    //console.log(message.member.roles.find(val => val.name === "ADMIN").calculatedPosition)
+
     if (message.author.id !== Components.BotId) {
         if (message.channel.type !== "dm") {
             var list_Parse = Ping.parse(message) || 

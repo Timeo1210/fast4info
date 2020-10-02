@@ -18,9 +18,11 @@ const Info = require('./commands/info')
 const fKick = require('./commands/fKick')
 const Help = require('./commands/help')
 const List = require('./commands/list')
+const PreBan = require('./commands/preban')
 
 mongoose.connect(process.env.DATABASE_URL, {
     useNewUrlParser: true,
+    useUnifiedTopology: true
 })
 const db = mongoose.connection
 db.on('error', (error) => console.log(error))
@@ -52,7 +54,8 @@ bot.on('message', function (message) {
         Info.parse(message) ||
         fKick.parse(message) ||
         Help.parse(message) ||
-        List.parse(message)
+        List.parse(message) ||
+        PreBan.parse(message)
         } else {
             message.channel.send("**Impossible de m'utiliser ici**")
         }
@@ -60,6 +63,13 @@ bot.on('message', function (message) {
     
     
     
+})
+
+bot.on('guildMemberAdd', function(member) {
+    console.log(member)
+    console.log("[*] New member")
+    const userTag = member.user.tag
+
 })
 
 

@@ -1,0 +1,11 @@
+.env
+node_modules
+build
+modules/searchPersonne.py
+binding.gyp
+package-lock.js
+*.tar
+production.env
+._git
+.tar
+fast4info_0_1_0.tar

@@ -1,0 +1,12 @@
+/app.js
+/modules/*
+/models/*
+/commands/among/*
+/commands/commands.js
+/commands/disc.js
+/commands/fKick.js
+/commands/help.js
+/commands/info.js
+/commands/list.js
+/commands/ping.js
+/commands/preban.js

@@ -23,7 +23,7 @@ module.exports = class Disc extends Command {
             if (handle === true) {
                 Components.commandDatabaseCheck(data, () => {
                     if (message.member.voiceChannel !== undefined) {
-                        let voiceChannels = message.member.voiceChannel
+                        let voiceChannels = message.member.voice.channel
                         message.delete()
         
                         Components.BotInUse = true

@@ -9,3 +9,4 @@ production.env
 ._git
 .tar
 fast4info_0_1_0.tar
+.vscode

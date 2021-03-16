@@ -9,7 +9,7 @@ module.exports = class Components {
     constructor() {
         //BOT
         this.BotInUse = false
-        this.BotId = "602887197749674030"
+        this.BotId = process.env.BOT_CLIENTID
 
         //Sounds
         this.Sounds = {

@@ -22,18 +22,18 @@ module.exports = class Disc extends Command {
         .then (handle => {
             if (handle === true) {
                 Components.commandDatabaseCheck(data, () => {
-                    if (message.member.voiceChannel !== undefined) {
+                    if (message.member.voice.channel !== undefined) {
                         let voiceChannels = message.member.voice.channel
                         message.delete()
         
                         Components.BotInUse = true
                         voiceChannels.join()
                         .then(connection => {
-                            let dispatcher = connection.playFile(Components.Sounds.Drum_Rolls.path, {
+                            let dispatcher = connection.play(Components.Sounds.Drum_Rolls.path, {
                                 bitrate: 32
                             });
                             dispatcher.setBitrate(64)
-                            dispatcher.on('speaking', (speaking) => {
+                            dispatcher.on('start', (speaking = true) => {
                                 if (speaking === true) {
                                     setTimeout(() => {
                                         //voiceChannels is for members use voiceChannels.members.user for users
@@ -72,13 +72,13 @@ module.exports = class Disc extends Command {
                                             }
                                             getKeys()
                                             try {
-                                                members.get(keys[Components.getRandom(0, members.size - 1)]).setVoiceChannel(null)
+                                                members.get(keys[Components.getRandom(0, members.size - 1)]).voice.kick()
                                             } catch(e) {
                                                 console.error(e)
                                             }
                     
                                         } else {
-                                            message.member.setVoiceChannel(null)
+                                            message.member.voice.kick()
                                         }
                                         
                                         //use setVoiceChannel(null) for disconnect the member  

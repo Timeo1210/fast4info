@@ -10,7 +10,7 @@
   "author": "Boulhol Timeo",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "discord.js": "^12.5.1",
     "dotenv": "^8.1.0",
     "ffmpeg-static": "^4.2.7",
     "get-mp3-duration": "^1.0.0",

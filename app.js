@@ -20,6 +20,7 @@ const Help = require('./commands/help')
 const List = require('./commands/list')
 const PreBan = require('./commands/preban')
 const Among = require('./commands/among')
+const Injure = require("./commands/injure")
 
 mongoose.connect(process.env.DATABASE_URL, {
     useNewUrlParser: true,
@@ -57,7 +58,8 @@ bot.on('message', function (message) {
         Help.parse(message) ||
         List.parse(message) ||
         PreBan.parse(message) ||
-        Among.parse(message)
+        Among.parse(message) ||
+        Injure.parse(message)
         } else {
             message.channel.send("**Impossible de m'utiliser ici**")
         }
